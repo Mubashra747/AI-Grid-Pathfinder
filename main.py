@@ -151,3 +151,52 @@ def main():
     pygame.quit()
 
 main()
+# DFS Algorithm with Animation + Dynamic Obstacles
+def dfs(grid, start, end):
+    stack = []
+    stack.append(start)
+    visited = set()
+
+    directions = [
+        (-1, 0), (0, 1), (1, 0), (1, 1),
+        (0, -1), (-1, -1), (-1, 1), (1, -1)
+    ]
+
+    while stack:
+
+        pygame.time.delay(50)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        current = stack.pop()
+
+        if current == end:
+            reconstruct_path(start, end)
+            return True
+
+        visited.add((current.row, current.col))
+
+        for dr, dc in directions:
+            r = current.row + dr
+            c = current.col + dc
+
+            if 0 <= r < ROWS and 0 <= c < ROWS:
+                neighbor = grid[r][c]
+
+                if (r, c) not in visited and neighbor.color not in (BLACK, GREEN):
+                    neighbor.parent = current
+                    neighbor.color = YELLOW
+                    stack.append(neighbor)
+
+        if current != start:
+            current.color = RED
+
+        draw(grid)
+
+    return False
+
+
+
